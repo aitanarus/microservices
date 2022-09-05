@@ -10,7 +10,8 @@ public record CustomerService(CustomerRepository customerRepository) {
                 .lastName(request.lastName())
                 .email(request.email())
                 .build();   //builder pattern
-
+        // todo: check if email valid
+        // todo: check if email not taken
         customerRepository.save(customer);
     }
 }

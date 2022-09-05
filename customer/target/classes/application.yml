@@ -6,7 +6,7 @@ spring:
   datasource:
     username: amigoscode
     password: password
-    url: jdbc:postgresql://localhost:5432/customer
+    url: jdbc:postgresql://localhost:5433/customer
   jpa:
     hibernate:
       ddl-auto: update
