@@ -1,5 +1,6 @@
 package fraud;
 
+import clients.fraud.FraudCheckResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
