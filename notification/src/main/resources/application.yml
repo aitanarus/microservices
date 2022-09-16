@@ -1,20 +1,22 @@
 server:
   port: 8082
 spring:
-  application:
-    name: notification
-  datasource:
-    username: amigoscode
-    password: password
-    url: jdbc:postgresql://localhost:5433/notification
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    properties:
+    application:
+      name: notification
+    datasource:
+      username: amigoscode
+      password: password
+      url: jdbc:postgresql://localhost:5433/notification
+    jpa:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
-      show-sql: true
+        ddl-auto: create-drop
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+          format_sql: true
+        show-sql: true
+    zipkin:
+      base-url: http://localhost:9411
 eureka:
   client:
     service-url:
