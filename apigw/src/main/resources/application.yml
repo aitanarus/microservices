@@ -13,7 +13,6 @@ spring:
           uri: lb://CUSTOMER
           predicates:
             - Path=/api/v1/customers/**
-
 eureka:
   client:
     service-url:

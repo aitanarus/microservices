@@ -1,7 +1,10 @@
 package customer;
 
+import amqp.RabbitMQMessageProducer;
 import clients.fraud.FraudCheckResponse;
 import clients.fraud.FraudClient;
+import clients.notification.NotificationClient;
+import clients.notification.NotificationRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -9,26 +12,40 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @AllArgsConstructor
 public class CustomerService {
+
     private final CustomerRepository customerRepository;
-    private final RestTemplate restTemplate;
+    private final RabbitMQMessageProducer rabbitMQMessageProducer;
     private final FraudClient fraudClient;
 
-    public void registerCustomer(CustomerRegistrationRequest request){
+    public void registerCustomer(CustomerRegistrationRequest request) {
         Customer customer = Customer.builder()
                 .firstName(request.firstName())
                 .lastName(request.lastName())
                 .email(request.email())
-                .build();   //builder pattern
-        // todo: check if email valid
-        // todo: check if email not taken
-        // todo: check if fraudster
+                .build();
+
         customerRepository.saveAndFlush(customer);
 
-        FraudCheckResponse fraudCheckResponse = fraudClient.isFraudster(customer.getId());
+        FraudCheckResponse fraudCheckResponse =
+                fraudClient.isFraudster(customer.getId());
 
-        if (fraudCheckResponse.isFraudster()) {
+        if (fraudCheckResponse.isFraudster()){
             throw new IllegalStateException("fraudster");
         }
-        // todo: send notification
+
+        NotificationRequest notificationRequest = new NotificationRequest(
+                        customer.getId(),
+                        customer.getEmail(),
+                        String.format("Hi %s, welcome...",
+                                customer.getFirstName()));
+
+        rabbitMQMessageProducer.publish(
+                notificationRequest,
+                "internal.exchange",
+                "internal.notification.routing-key"
+        );
+
+
     }
 }
+
